@@ -7,9 +7,9 @@ function color($string, $color) {
         'cyan'    => "\033[1;36m",
         'red'     => "\033[1;31m",
         'blue'    => "\033[1;34m", // azul escuro
-        'purple'  => "\033[1;35m",
+        'purple'  => "\033[1;35m", // roxo
         'white'   => "\033[1;37m",
-        'pink'    => "\033[1;95m",
+        'pink'    => "\033[1;95m", // magenta claro, se quiser usar depois
     ];
     return $colors[$color] . $string . $colors['reset'];
 }
@@ -45,10 +45,10 @@ function parear_adb() {
     echo color("COLOQUE O CÓDIGO DE PAREAMENTO, UM ESPAÇO E DEPOIS A PORTA: ", "green");
     $linha = trim(fgets(STDIN));
     list($codigo, $porta) = explode(' ', $linha);
-    system("adb pair localhost:$porta $codigo");
+    system("adb pair localhost:$porta $codigo > /dev/null 2>&1");
     echo color("\nAgora digite a porta para conectar via ADB (exemplo: 4343): ", "yellow");
     $porta_con = trim(fgets(STDIN));
-    system("adb connect localhost:$porta_con");
+    system("adb connect localhost:$porta_con > /dev/null 2>&1");
     if (verificar_conexao_adb()) {
         echo color("\n[$] ADB pareado e conectado com sucesso! [APROVADO]\n", "purple");
     } else {
