@@ -35,12 +35,19 @@ function verificar_conexao_adb() {
     return false;
 }
 
-function conectar_adb() {
-    echo color("\n[!] ADB não está conectado. Digite a porta para conectar (exemplo: 4343): ", "yellow");
-    $porta = trim(fgets(STDIN));
-    system("adb connect localhost:$porta");
+function parear_adb() {
+    echo color("\n[!] ADB não está conectado.\n", "yellow");
+    echo color("[!] Digite o CÓDIGO DE PAREAMENTO e a PORTA separados por espaço\n", "yellow");
+    echo color("Exemplo: 123456 4343\n", "white");
+    echo color("COLOQUE O CÓDIGO DE PAREAMENTO E UM ESPAÇO E COLOQUE A PORTA: ", "cyan");
+    $linha = trim(fgets(STDIN));
+    list($codigo, $porta) = explode(' ', $linha);
+    system("adb pair localhost:$porta $codigo");
+    echo color("\n[!] Agora digite a porta para conectar via ADB (exemplo: 4343): ", "yellow");
+    $porta_con = trim(fgets(STDIN));
+    system("adb connect localhost:$porta_con");
     if (verificar_conexao_adb()) {
-        echo color("\n[+] ADB conectado com sucesso!\n", "green");
+        echo color("\n[+] ADB pareado e conectado com sucesso!\n", "green");
     } else {
         echo color("\n[!] Falha ao conectar ao ADB. Verifique a porta e tente novamente.\n", "red");
         exit;
@@ -73,20 +80,11 @@ switch ($opcao) {
             echo color("\n[+] android-tools já está instalado.\n", "green");
         }
         if (!verificar_conexao_adb()) {
-            conectar_adb();
+            parear_adb();
         } else {
             echo color("\n[+] ADB já está conectado.\n", "green");
         }
-        echo color("\n[!] Para parear via ADB, digite o CÓDIGO DE PAREAMENTO e a PORTA separados por espaço\n", "yellow");
-        echo color("Exemplo: 123456 4343\n", "white");
-        echo color("COLOQUE O CÓDIGO DE PAREAMENTO E UM ESPAÇO E COLOQUE A PORTA: ", "cyan");
-        $linha = trim(fgets(STDIN));
-        list($codigo, $porta) = explode(' ', $linha);
-        system("adb pair localhost:$porta $codigo");
-        echo color("\n[!] Agora digite a porta para conectar via ADB (exemplo: 4343): ", "yellow");
-        $porta_con = trim(fgets(STDIN));
-        system("adb connect localhost:$porta_con");
-        echo color("\n[!] Módulos instalados, ADB pareado e conectado!\n", "green");
+        // Continue sua lógica de opção 0 aqui
         break;
     case '1':
     case '2':
@@ -96,7 +94,7 @@ switch ($opcao) {
             echo color("\n[+] android-tools já está instalado.\n", "green");
         }
         if (!verificar_conexao_adb()) {
-            conectar_adb();
+            parear_adb();
         } else {
             echo color("\n[+] ADB já está conectado.\n", "green");
         }
