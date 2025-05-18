@@ -13,11 +13,21 @@ function color($string, $color) {
     return $colors[$color] . $string . $colors['reset'];
 }
 
+function android_tools_instalado() {
+    $output = [];
+    exec("which adb", $output);
+    return !empty($output) && strpos($output[0], "/") !== false;
+}
+
+function instalar_android_tools() {
+    echo color("\n[!] Instalando android-tools...\n", "purple");
+    system("pkg install android-tools -y");
+}
+
 function verificar_conexao_adb() {
     $output = [];
     exec("adb devices", $output);
     foreach ($output as $linha) {
-        // Se aparecer "localhost:" na lista de devices, está conectado
         if (preg_match('/localhost:\\d+\s+device/', $linha)) {
             return true;
         }
@@ -58,11 +68,12 @@ $opcao = trim(fgets(STDIN));
 
 switch ($opcao) {
     case '0':
+        if (!android_tools_instalado()) {
+            instalar_android_tools();
+        }
         if (!verificar_conexao_adb()) {
             conectar_adb();
         }
-        echo color("\n[!] Instalando android-tools...\n", "purple");
-        system("pkg install android-tools -y");
         echo color("\n[!] Para parear via ADB, digite o CÓDIGO DE PAREAMENTO e a PORTA separados por espaço\n", "yellow");
         echo color("Exemplo: 123456 4343\n", "white");
         echo color("COLOQUE O CÓDIGO DE PAREAMENTO E UM ESPAÇO E COLOQUE A PORTA: ", "cyan");
@@ -75,10 +86,14 @@ switch ($opcao) {
         echo color("\n[!] Módulos instalados, ADB pareado e conectado!\n", "green");
         break;
     case '1':
+        if (!android_tools_instalado()) {
+            instalar_android_tools();
+        }
         if (!verificar_conexao_adb()) {
             conectar_adb();
+        } else {
+            echo color("\n[+] Conexão ADB já está ativa!\n", "green");
         }
-        echo color("\n[+] Conexão ADB já está ativa!\n", "green");
         // Aqui pode entrar o que mais desejar na opção 1
         break;
     case '2':
