@@ -6,10 +6,10 @@ function color($string, $color) {
         'yellow'  => "\033[1;33m",
         'cyan'    => "\033[1;36m",
         'red'     => "\033[1;31m",
-        'blue'    => "\033[1;34m", // azul escuro
-        'purple'  => "\033[1;35m", // roxo
+        'blue'    => "\033[1;34m",
+        'purple'  => "\033[1;35m",
         'white'   => "\033[1;37m",
-        'pink'    => "\033[1;95m", // magenta claro, se quiser usar depois
+        'pink'    => "\033[1;95m",
     ];
     return $colors[$color] . $string . $colors['reset'];
 }
@@ -37,7 +37,7 @@ function verificar_conexao_adb() {
 }
 
 function parear_adb() {
-    echo color("\n[!] ADB não está conectado.\n", "red");
+    echo color("\n[!] ADB não está conectado.\n\n", "red"); // Espaço extra aqui
     echo color("[*] PARA PAREAR, SIGA AS INSTRUÇÕES ABAIXO:\n", "blue");
     echo color("Digite o CÓDIGO DE PAREAMENTO e a PORTA separados por espaço\n", "green");
     echo color("Exemplo: 123456 4343\n", "yellow");
@@ -66,7 +66,6 @@ echo color("  \\___/ \\___|\\___|_|  |_|\\___|\\___|\\__|___/   |____/ \\__,_|_|
 echo "\n";
 echo color("          ===  AUCEROLA BAYPASS MENU  ===\n\n", "yellow");
 
-// Cada número na cor do item correspondente
 echo color("[0] Instalar Módulos e Parear ADB\n", "purple");
 echo color("[1] Baypass Free Fire Normal (Atualizar conexão)\n", "green");
 echo color("[2] Baypass Free Fire Max\n", "green");
@@ -81,13 +80,13 @@ switch ($opcao) {
             echo color("\n[!] android-tools não está instalado.\n", "red");
             instalar_android_tools();
         } else {
-            echo color("\n[$] android-tools já está instalado.\n", "purple");
+            echo color("\n[$] android-tools já está instalado.\n\n", "purple"); // Espaço extra aqui
         }
         if (!verificar_conexao_adb()) {
-            echo color("\n[!] ADB não está conectado.\n", "red");
+            echo color("\n[!] ADB não está conectado.\n\n", "red"); // Espaço extra aqui
             parear_adb();
         } else {
-            echo color("\n[$] ADB já está conectado.\n", "purple");
+            echo color("\n[$] ADB já está conectado.\n\n", "purple"); // Espaço extra aqui
         }
         break;
     case '1':
@@ -96,13 +95,13 @@ switch ($opcao) {
             echo color("\n[!] android-tools não está instalado.\n", "red");
             instalar_android_tools();
         } else {
-            echo color("\n[$] android-tools já está instalado.\n", "purple");
+            echo color("\n[$] android-tools já está instalado.\n\n", "purple"); // Espaço extra aqui
         }
         if (!verificar_conexao_adb()) {
-            echo color("\n[!] ADB não está conectado.\n", "red");
+            echo color("\n[!] ADB não está conectado.\n\n", "red"); // Espaço extra aqui
             parear_adb();
         } else {
-            echo color("\n[$] ADB já está conectado.\n", "purple");
+            echo color("\n[$] ADB já está conectado.\n\n", "purple"); // Espaço extra aqui
         }
         echo color("\n[★] Opção $opcao executada com sucesso!\n", "cyan");
         break;
