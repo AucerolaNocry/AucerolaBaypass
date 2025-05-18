@@ -37,6 +37,23 @@ function verificar_freefire() {
     }
 }
 
+// Verifica se o dispositivo está com root
+function verificar_root() {
+    $output = shell_exec("adb shell su -c 'id'");
+    if (strpos($output, "uid=0") !== false) {
+        echo "[OK] Dispositivo com root!\n";
+    } else {
+        echo "[ERRO] Dispositivo NÃO possui root ou root não concedido!\n";
+    }
+}
+
+// Atualiza o script (simples exemplo)
+function atualizar_script() {
+    echo "[INFO] Atualizando script...\n";
+    shell_exec("git pull");
+    echo "[OK] Script atualizado (se houveram mudanças no repositório).\n";
+}
+
 // Loop principal do menu
 function main_menu() {
     while (true) {
@@ -51,7 +68,7 @@ function main_menu() {
                 verificar_freefire();
                 break;
             case '3':
-                // Função de root entra aqui
+                verificar_root();
                 break;
             case '4':
                 atualizar_script();
@@ -65,3 +82,6 @@ function main_menu() {
         readline("Pressione ENTER para continuar...");
     }
 }
+
+// Iniciar o menu
+main_menu();
