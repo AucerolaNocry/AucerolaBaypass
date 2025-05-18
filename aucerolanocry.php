@@ -1,30 +1,45 @@
 <?php
-// Função para adicionar cor ANSI ao terminal
 function color($string, $color) {
     $colors = [
         'reset'   => "\033[0m",
+        'red'     => "\033[1;31m",
         'green'   => "\033[1;32m",
         'yellow'  => "\033[1;33m",
-        'cyan'    => "\033[1;36m",
-        'red'     => "\033[1;31m",
         'blue'    => "\033[1;34m",
         'purple'  => "\033[1;35m",
+        'cyan'    => "\033[1;36m",
         'white'   => "\033[1;37m",
     ];
     return $colors[$color] . $string . $colors['reset'];
 }
 
-// Limpa a tela
 system("clear");
 
-// Banner personalizado em ASCII
-echo color("   ___                 _           _           ____                       \n", "cyan");
-echo color("  / _ \\  ___  ___ _ __(_) ___  ___| |_ ___    | __ )  __ _ _ __ ___  ___ \n", "cyan");
-echo color(" | | | |/ _ \\/ __| '__| |/ _ \\/ __| __/ __|   |  _ \\ / _` | '__/ _ \\/ __|\n", "cyan");
-echo color(" | |_| |  __/ (__| |  | |  __/ (__| |_\\__ \\   | |_) | (_| | | |  __/\\__ \\\n", "cyan");
-echo color("  \\___/ \\___|\\___|_|  |_|\\___|\\___|\\__|___/   |____/ \\__,_|_|  \\___||___/\n", "cyan");
-echo "\n";
-echo color("          ===  AUCEROLA BAYPASS MENU  ===\n\n", "yellow");
+// Caveira em vermelho
+echo color("
+███████████████████████████
+███████▀▀▀░░░░░░░▀▀▀███████
+████▀░░░░░░░░░░░░░░░░░▀████
+███│░░░░░░░░░░░░░░░░░░░│███
+██▌│░░░░░░░░░░░░░░░░░░░│▐██
+██░└┐░░░░░░░░░░░░░░░░░┌┘░██
+██░░└┐░░░░░░░░░░░░░░┌┘░░██
+██░░┌┘▄▄▄▄▄░░░░░▄▄▄▄▄└┐░░██
+██▌░│██████▌░░░▐██████│░▐██
+███░│▐███▀▀░░▄░░▀▀███▌│░███
+██▀─┘░░░░░░░▐█▌░░░░░░░└─▀██
+██▄░░░▄▄▄▓░░▀█▀░░▓▄▄▄░░░▄██
+████▄─┘██▌░░░░░░░▐██└─▄████
+█████░░▐█─┬┬┬┬┬┬┬─█▌░░█████
+████▌░░░▀┬┼┼┼┼┼┼┼┬▀░░░▐████
+█████▄░░░└┴┴┴┴┴┴┴┘░░░▄█████
+███████▄░░░░░░░░░░░▄███████
+██████████▄▄▄▄▄▄▄██████████
+███████████████████████████
+", "red");
+
+echo color("        ==  AUCEROLA BAYPASS MENU  ==\n", "yellow");
+echo color("             by @AucerolaNocry\n\n", "purple");
 
 // Exibe o menu com cores
 echo color("[0] ", "yellow") . color("Instalar Módulos", "white") . color(" (Atualizar e instalar módulos)\n", "purple");
