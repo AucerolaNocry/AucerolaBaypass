@@ -38,7 +38,6 @@ function verificar_conexao_adb() {
 
 function parear_adb() {
     echo color("\n[!] ADB não está conectado.\n", "red");
-    echo "\n";
     echo color("[*] PARA PAREAR, SIGA AS INSTRUÇÕES ABAIXO:\n", "blue");
     echo color("Digite o CÓDIGO DE PAREAMENTO e a PORTA separados por espaço\n", "green");
     echo color("Exemplo: 123456 4343\n", "yellow");
@@ -67,10 +66,11 @@ echo color("  \\___/ \\___|\\___|_|  |_|\\___|\\___|\\__|___/   |____/ \\__,_|_|
 echo "\n";
 echo color("          ===  AUCEROLA BAYPASS MENU  ===\n\n", "yellow");
 
-echo color("[0] ", "yellow") . color("Instalar Módulos e Parear ADB\n", "purple");
-echo color("[1] ", "yellow") . color("Baypass Free Fire Normal (Atualizar conexão)\n", "green");
-echo color("[2] ", "yellow") . color("Baypass Free Fire Max\n", "green");
-echo color("[S] ", "yellow") . color("Sair\n\n", "red");
+// Cada número na cor do item correspondente
+echo color("[0] Instalar Módulos e Parear ADB\n", "purple");
+echo color("[1] Baypass Free Fire Normal (Atualizar conexão)\n", "green");
+echo color("[2] Baypass Free Fire Max\n", "green");
+echo color("[3] Sair\n\n", "red");
 echo color("[#] Escolha uma das opções acima: ", "blue");
 
 $opcao = trim(fgets(STDIN));
@@ -106,8 +106,7 @@ switch ($opcao) {
         }
         echo color("\n[★] Opção $opcao executada com sucesso!\n", "cyan");
         break;
-    case 'S':
-    case 's':
+    case '3':
         echo color("\n[!] Saindo...\n", "red");
         exit;
         break;
