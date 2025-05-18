@@ -4,7 +4,7 @@ function color($string, $color) {
         'reset'   => "\033[0m",
         'green'   => "\033[1;32m",
         'yellow'  => "\033[1;33m",
-        'cyan'    => "\033[1;36m",
+        'cyan'    => "\033[1;36m", // azul claro
         'red'     => "\033[1;31m",
         'blue'    => "\033[1;34m",
         'purple'  => "\033[1;35m",
@@ -38,17 +38,19 @@ function verificar_conexao_adb() {
 
 function parear_adb() {
     echo color("\n[!] ADB não está conectado.\n", "red");
-    echo color("[!] Digite o CÓDIGO DE PAREAMENTO e a PORTA separados por espaço\n", "purple");
-    echo color("Exemplo: 123456 4343\n", "purple");
-    echo color("COLOQUE O CÓDIGO DE PAREAMENTO E UM ESPAÇO E COLOQUE A PORTA: ", "purple");
+    echo "\n";
+    echo color("[*] Para parear, siga as instruções abaixo:\n", "cyan");
+    echo color("Digite o CÓDIGO DE PAREAMENTO e a PORTA separados por espaço\n", "cyan");
+    echo color("Exemplo: 123456 4343\n", "cyan");
+    echo color("COLOQUE O CÓDIGO DE PAREAMENTO, UM ESPAÇO E DEPOIS A PORTA: ", "cyan");
     $linha = trim(fgets(STDIN));
     list($codigo, $porta) = explode(' ', $linha);
     system("adb pair localhost:$porta $codigo");
-    echo color("\n[!] Agora digite a porta para conectar via ADB (exemplo: 4343): ", "purple");
+    echo color("\nAgora digite a porta para conectar via ADB (exemplo: 4343): ", "cyan");
     $porta_con = trim(fgets(STDIN));
     system("adb connect localhost:$porta_con");
     if (verificar_conexao_adb()) {
-        echo color("\n[$] ADB pareado e conectado com sucesso! [APROVADO]\n", "purple");
+        echo color("\n[$] ADB pareado e conectado com sucesso! [APROVADO]\n", "cyan");
     } else {
         echo color("\n[!] Falha ao conectar ao ADB. Verifique a porta e tente novamente.\n", "red");
         exit;
@@ -79,13 +81,13 @@ switch ($opcao) {
             echo color("\n[!] android-tools não está instalado.\n", "red");
             instalar_android_tools();
         } else {
-            echo color("\n[$] android-tools já está instalado.\n", "purple");
+            echo color("\n[$] android-tools já está instalado.\n", "cyan");
         }
         if (!verificar_conexao_adb()) {
             echo color("\n[!] ADB não está conectado.\n", "red");
             parear_adb();
         } else {
-            echo color("\n[$] ADB já está conectado.\n", "purple");
+            echo color("\n[$] ADB já está conectado.\n", "cyan");
         }
         break;
     case '1':
@@ -94,13 +96,13 @@ switch ($opcao) {
             echo color("\n[!] android-tools não está instalado.\n", "red");
             instalar_android_tools();
         } else {
-            echo color("\n[$] android-tools já está instalado.\n", "purple");
+            echo color("\n[$] android-tools já está instalado.\n", "cyan");
         }
         if (!verificar_conexao_adb()) {
             echo color("\n[!] ADB não está conectado.\n", "red");
             parear_adb();
         } else {
-            echo color("\n[$] ADB já está conectado.\n", "purple");
+            echo color("\n[$] ADB já está conectado.\n", "cyan");
         }
         echo color("\n[★] Opção $opcao executada com sucesso!\n", "cyan");
         break;
