@@ -13,6 +13,31 @@ function color($string, $color) {
     return $colors[$color] . $string . $colors['reset'];
 }
 
+function verificar_conexao_adb() {
+    $output = [];
+    exec("adb devices", $output);
+    foreach ($output as $linha) {
+        // Se aparecer "localhost:" na lista de devices, está conectado
+        if (preg_match('/localhost:\\d+\s+device/', $linha)) {
+            return true;
+        }
+    }
+    return false;
+}
+
+function conectar_adb() {
+    echo color("\n[!] ADB não está conectado. Digite a porta para conectar (exemplo: 4343): ", "yellow");
+    $porta = trim(fgets(STDIN));
+    system("adb connect localhost:$porta");
+    // Checa novamente
+    if (verificar_conexao_adb()) {
+        echo color("\n[+] ADB conectado com sucesso!\n", "green");
+    } else {
+        echo color("\n[!] Falha ao conectar ao ADB. Verifique a porta e tente novamente.\n", "red");
+        exit;
+    }
+}
+
 system("clear");
 
 echo color("   ___                 _           _           ____                       \n", "cyan");
@@ -33,6 +58,9 @@ $opcao = trim(fgets(STDIN));
 
 switch ($opcao) {
     case '0':
+        if (!verificar_conexao_adb()) {
+            conectar_adb();
+        }
         echo color("\n[!] Instalando android-tools...\n", "purple");
         system("pkg install android-tools -y");
         echo color("\n[!] Para parear via ADB, digite o CÓDIGO DE PAREAMENTO e a PORTA separados por espaço\n", "yellow");
@@ -41,15 +69,17 @@ switch ($opcao) {
         $linha = trim(fgets(STDIN));
         list($codigo, $porta) = explode(' ', $linha);
         system("adb pair localhost:$porta $codigo");
-        echo color("\n[!] Conectando via ADB...\n", "purple");
-        system("adb connect localhost:$porta");
+        echo color("\n[!] Agora digite a porta para conectar via ADB (exemplo: 4343): ", "yellow");
+        $porta_con = trim(fgets(STDIN));
+        system("adb connect localhost:$porta_con");
         echo color("\n[!] Módulos instalados, ADB pareado e conectado!\n", "green");
         break;
     case '1':
-        echo color("\n[!] Digite a porta para atualizar a conexão ADB (exemplo: 4343): ", "yellow");
-        $porta = trim(fgets(STDIN));
-        system("adb connect localhost:$porta");
-        echo color("\n[+] Conexão ADB atualizada!\n", "green");
+        if (!verificar_conexao_adb()) {
+            conectar_adb();
+        }
+        echo color("\n[+] Conexão ADB já está ativa!\n", "green");
+        // Aqui pode entrar o que mais desejar na opção 1
         break;
     case '2':
         echo color("\n[+] Executando Baypass Free Fire Max...\n", "green");
