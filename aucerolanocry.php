@@ -39,7 +39,6 @@ function conectar_adb() {
     echo color("\n[!] ADB não está conectado. Digite a porta para conectar (exemplo: 4343): ", "yellow");
     $porta = trim(fgets(STDIN));
     system("adb connect localhost:$porta");
-    // Checa novamente
     if (verificar_conexao_adb()) {
         echo color("\n[+] ADB conectado com sucesso!\n", "green");
     } else {
@@ -70,9 +69,13 @@ switch ($opcao) {
     case '0':
         if (!android_tools_instalado()) {
             instalar_android_tools();
+        } else {
+            echo color("\n[+] android-tools já está instalado.\n", "green");
         }
         if (!verificar_conexao_adb()) {
             conectar_adb();
+        } else {
+            echo color("\n[+] ADB já está conectado.\n", "green");
         }
         echo color("\n[!] Para parear via ADB, digite o CÓDIGO DE PAREAMENTO e a PORTA separados por espaço\n", "yellow");
         echo color("Exemplo: 123456 4343\n", "white");
@@ -86,19 +89,19 @@ switch ($opcao) {
         echo color("\n[!] Módulos instalados, ADB pareado e conectado!\n", "green");
         break;
     case '1':
+    case '2':
         if (!android_tools_instalado()) {
             instalar_android_tools();
+        } else {
+            echo color("\n[+] android-tools já está instalado.\n", "green");
         }
         if (!verificar_conexao_adb()) {
             conectar_adb();
         } else {
-            echo color("\n[+] Conexão ADB já está ativa!\n", "green");
+            echo color("\n[+] ADB já está conectado.\n", "green");
         }
-        // Aqui pode entrar o que mais desejar na opção 1
-        break;
-    case '2':
-        echo color("\n[+] Executando Baypass Free Fire Max...\n", "green");
-        // Lógica para Free Fire Max aqui
+        // Aqui pode entrar o que mais desejar nas opções 1 e 2
+        echo color("\n[+] Opção $opcao executada!\n", "cyan");
         break;
     case 'S':
     case 's':
