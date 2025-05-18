@@ -48,7 +48,7 @@ function parear_adb() {
     $porta_con = trim(fgets(STDIN));
     system("adb connect localhost:$porta_con");
     if (verificar_conexao_adb()) {
-        echo color("\n[✔] ADB pareado e conectado com sucesso! [APROVADO]\n", "purple");
+        echo color("\n[$] ADB pareado e conectado com sucesso! [APROVADO]\n", "purple");
     } else {
         echo color("\n[!] Falha ao conectar ao ADB. Verifique a porta e tente novamente.\n", "red");
         exit;
@@ -65,7 +65,7 @@ echo color("  \\___/ \\___|\\___|_|  |_|\\___|\\___|\\__|___/   |____/ \\__,_|_|
 echo "\n";
 echo color("          ===  AUCEROLA BAYPASS MENU  ===\n\n", "yellow");
 
-echo color("[0] ", "yellow") . color("Instalar Módulos e Parear ADB\n", "white");
+echo color("[0] ", "yellow") . color("Instalar Módulos e Parear ADB\n", "purple");
 echo color("[1] ", "yellow") . color("Baypass Free Fire Normal (Atualizar conexão)\n", "green");
 echo color("[2] ", "yellow") . color("Baypass Free Fire Max\n", "green");
 echo color("[S] ", "yellow") . color("Sair\n\n", "red");
@@ -78,12 +78,12 @@ switch ($opcao) {
         if (!android_tools_instalado()) {
             instalar_android_tools();
         } else {
-            echo color("\n[✔] android-tools já está instalado.\n", "purple");
+            echo color("\n[$] android-tools já está instalado.\n", "purple");
         }
         if (!verificar_conexao_adb()) {
             parear_adb();
         } else {
-            echo color("\n[✔] ADB já está conectado.\n", "purple");
+            echo color("\n[$] ADB já está conectado.\n", "purple");
         }
         // Lógica extra opção 0
         break;
@@ -92,12 +92,12 @@ switch ($opcao) {
         if (!android_tools_instalado()) {
             instalar_android_tools();
         } else {
-            echo color("\n[✔] android-tools já está instalado.\n", "purple");
+            echo color("\n[$] android-tools já está instalado.\n", "purple");
         }
         if (!verificar_conexao_adb()) {
             parear_adb();
         } else {
-            echo color("\n[✔] ADB já está conectado.\n", "purple");
+            echo color("\n[$] ADB já está conectado.\n", "purple");
         }
         // A cor do resultado final da opção, pode usar azul, cyan ou pink para variar
         echo color("\n[★] Opção $opcao executada com sucesso!\n", "cyan");
