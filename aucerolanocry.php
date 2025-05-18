@@ -1,62 +1,58 @@
-<?php
-// Cores de terminal
-$corPadrao = "\033[0m";
-$negrito = "\033[1m";
-$verde = "\033[32m";
-$vermelho = "\033[31m";
-$amarelo = "\033[33m";
-$azul = "\033[36m";
-$branco = "\033[97m";
 
-// Função Banner igual ao KellerSS.php
-function exibirBanner() {
-    global $azul, $corPadrao, $negrito;
-    echo $azul . $negrito;
-    echo "--------------------------------------\n";
-    echo "          KellerSS SCANNER            \n";
-    echo "        Coded By - KellerSS           \n";
-    echo "        Credits: Sheik                \n";
-    echo "--------------------------------------\n";
-    echo $corPadrao;
-}
+// Prévia do scanner limpo baseado no KellerSS.php
 
-// Exibe menu principal igual ao original (com as mesmas opções)
-function exibirMenu() {
-    global $negrito, $corPadrao, $verde, $amarelo, $vermelho;
-    echo $negrito . $verde . "[30] Scanner completo (Logs e Arquivos)\n" . $corPadrao;
-    echo $negrito . $amarelo . "[31] Scanner rápido (Arquivos)\n" . $corPadrao;
-    echo $negrito . $azul . "[32] Scanner avançado (Pastas extras)\n" . $corPadrao;
-    echo $negrito . $vermelho . "[53] Atualizar script\n" . $corPadrao;
-    echo $corPadrao . "[0] Sair\n";
-    echo "Escolha uma das opções acima: ";
-}
+function scannerCompleto() {
+    global $bold, $verde, $vermelho, $azul, $reset;
 
-// Início do script
-system('clear');
-exibirBanner();
-exibirMenu();
+    echo $bold . $azul . "[*] Iniciando scanner completo de pastas e arquivos...
+" . $reset;
 
-// Aqui pode vir o switch/case para cada opção, exemplo:
-$opcao = trim(fgets(STDIN));
-switch ($opcao) {
-    case "30":
-        // Chamar função do scanner completo
-        // scannerCompleto();
-        break;
-    case "31":
-        // scannerRapido();
-        break;
-    case "32":
-        // scannerAvancado();
-        break;
-    case "53":
-        // atualizarScript();
-        break;
-    case "0":
-        echo "Saindo...\n";
-        exit;
-    default:
-        echo $vermelho . "[!] Opção inválida.\n" . $corPadrao;
-        // Reexibe menu se quiser
-        break;
+    $replayPath = "/sdcard/Android/data/com.dts.freefireth/files/MReplays/";
+    if (!is_dir($replayPath)) {
+        echo $bold . $vermelho . "[!] Pasta de replays não encontrada: $replayPath
+" . $reset;
+        return;
+    }
+
+    $arquivos = scandir($replayPath);
+    $motivos = [];
+
+    foreach ($arquivos as $arquivo) {
+        if (in_array($arquivo, ['.', '..'])) continue;
+        $caminho = $replayPath . $arquivo;
+
+        if (is_file($caminho)) {
+            $info = stat($caminho);
+            $acesso = date("Y-m-d H:i:s", $info['atime']);
+            $modificado = date("Y-m-d H:i:s", $info['mtime']);
+            $criado = date("Y-m-d H:i:s", $info['ctime']);
+
+            echo "{$verde}[+] Arquivo: $arquivo
+";
+            echo "    Acesso: $acesso
+";
+            echo "    Modificado: $modificado
+";
+            echo "    Criado: $criado
+";
+
+            if ($info['atime'] != $info['mtime']) {
+                $motivos[] = "Arquivo $arquivo teve horário de acesso diferente da modificação.";
+            }
+        }
+    }
+
+    if (!empty($motivos)) {
+        echo $bold . $vermelho . "
+[!] Inconsistências encontradas:
+" . $reset;
+        foreach ($motivos as $motivo) {
+            echo " - $motivo
+";
+        }
+    } else {
+        echo $bold . $verde . "
+[*] Nenhuma inconsistência detectada.
+" . $reset;
+    }
 }
