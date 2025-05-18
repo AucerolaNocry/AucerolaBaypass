@@ -23,8 +23,8 @@ echo color("  \\___/ \\___|\\___|_|  |_|\\___|\\___|\\__|___/   |____/ \\__,_|_|
 echo "\n";
 echo color("          ===  AUCEROLA BAYPASS MENU  ===\n\n", "yellow");
 
-echo color("[0] ", "yellow") . color("Instalar Módulos", "white") . color(" (Atualizar e instalar módulos)\n", "purple");
-echo color("[1] ", "yellow") . color("Baypass Free Fire Normal\n", "green");
+echo color("[0] ", "yellow") . color("Instalar Módulos e Parear ADB\n", "white");
+echo color("[1] ", "yellow") . color("Baypass Free Fire Normal (Atualizar conexão)\n", "green");
 echo color("[2] ", "yellow") . color("Baypass Free Fire Max\n", "green");
 echo color("[S] ", "yellow") . color("Sair\n\n", "red");
 echo color("[#] Escolha uma das opções acima: ", "blue");
@@ -35,18 +35,21 @@ switch ($opcao) {
     case '0':
         echo color("\n[!] Instalando android-tools...\n", "purple");
         system("pkg install android-tools -y");
-        echo color("\n[!] Fazendo pareamento ADB...\n", "purple");
-        // O ADB vai pedir a porta do pareamento
-        echo color("Digite a porta de pareamento (exemplo: 4343): ", "yellow");
-        $porta = trim(fgets(STDIN));
-        system("adb pair localhost:$porta");
+        echo color("\n[!] Para parear via ADB, digite o CÓDIGO DE PAREAMENTO e a PORTA separados por espaço\n", "yellow");
+        echo color("Exemplo: 123456 4343\n", "white");
+        echo color("COLOQUE O CÓDIGO DE PAREAMENTO E UM ESPAÇO E COLOQUE A PORTA: ", "cyan");
+        $linha = trim(fgets(STDIN));
+        list($codigo, $porta) = explode(' ', $linha);
+        system("adb pair localhost:$porta $codigo");
         echo color("\n[!] Conectando via ADB...\n", "purple");
-        system("adb connect localhost:");
-        echo color("\n[!] Módulos instalados e ADB conectado!\n", "green");
+        system("adb connect localhost:$porta");
+        echo color("\n[!] Módulos instalados, ADB pareado e conectado!\n", "green");
         break;
     case '1':
-        echo color("\n[+] Executando Baypass Free Fire Normal...\n", "green");
-        // Lógica para Free Fire Normal aqui
+        echo color("\n[!] Digite a porta para atualizar a conexão ADB (exemplo: 4343): ", "yellow");
+        $porta = trim(fgets(STDIN));
+        system("adb connect localhost:$porta");
+        echo color("\n[+] Conexão ADB atualizada!\n", "green");
         break;
     case '2':
         echo color("\n[+] Executando Baypass Free Fire Max...\n", "green");
