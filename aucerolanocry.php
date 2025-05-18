@@ -1,5 +1,4 @@
 <?php
-// Função para adicionar cor ANSI ao terminal
 function color($string, $color) {
     $colors = [
         'reset'   => "\033[0m",
@@ -14,10 +13,8 @@ function color($string, $color) {
     return $colors[$color] . $string . $colors['reset'];
 }
 
-// Limpa a tela
 system("clear");
 
-// Banner personalizado em ASCII
 echo color("   ___                 _           _           ____                       \n", "cyan");
 echo color("  / _ \\  ___  ___ _ __(_) ___  ___| |_ ___    | __ )  __ _ _ __ ___  ___ \n", "cyan");
 echo color(" | | | |/ _ \\/ __| '__| |/ _ \\/ __| __/ __|   |  _ \\ / _` | '__/ _ \\/ __|\n", "cyan");
@@ -26,21 +23,26 @@ echo color("  \\___/ \\___|\\___|_|  |_|\\___|\\___|\\__|___/   |____/ \\__,_|_|
 echo "\n";
 echo color("          ===  AUCEROLA BAYPASS MENU  ===\n\n", "yellow");
 
-// Exibe o menu com cores
 echo color("[0] ", "yellow") . color("Instalar Módulos", "white") . color(" (Atualizar e instalar módulos)\n", "purple");
 echo color("[1] ", "yellow") . color("Baypass Free Fire Normal\n", "green");
 echo color("[2] ", "yellow") . color("Baypass Free Fire Max\n", "green");
 echo color("[S] ", "yellow") . color("Sair\n\n", "red");
 echo color("[#] Escolha uma das opções acima: ", "blue");
 
-// Lê a opção do usuário
 $opcao = trim(fgets(STDIN));
 
-// Switch de opções
 switch ($opcao) {
     case '0':
-        echo color("\n[!] Instalando módulos...\n", "purple");
-        // Adicione aqui comandos de instalação, se desejar
+        echo color("\n[!] Instalando android-tools...\n", "purple");
+        system("pkg install android-tools -y");
+        echo color("\n[!] Fazendo pareamento ADB...\n", "purple");
+        // O ADB vai pedir a porta do pareamento
+        echo color("Digite a porta de pareamento (exemplo: 4343): ", "yellow");
+        $porta = trim(fgets(STDIN));
+        system("adb pair localhost:$porta");
+        echo color("\n[!] Conectando via ADB...\n", "purple");
+        system("adb connect localhost:");
+        echo color("\n[!] Módulos instalados e ADB conectado!\n", "green");
         break;
     case '1':
         echo color("\n[+] Executando Baypass Free Fire Normal...\n", "green");
