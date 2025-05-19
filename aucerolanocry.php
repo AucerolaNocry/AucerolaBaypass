@@ -46,7 +46,7 @@ function atualizar() {
 
 function inputusuario($message) {
     global $branco, $bold, $verdebg, $vermelhobg, $azulbg, $cln, $lazul, $fverde;
-    $inputstyle = $cln . $bold . $lazul . "[#] " . $message . ": " . $fverde;
+    $inputstyle = $cln . $bold . $azul . "[#] " . $message . ": " . $fverde;
     echo $inputstyle;
     return trim(fgets(STDIN, 1024));
 }
@@ -78,8 +78,9 @@ function verificar_freefire_th() {
         echo $bold . $vermelho . "[!] Pareamento realizado de maneira incorreta, digite 'adb disconnect' e refaça o processo.\n" . $cln;
         die;
     }
-    
-    if (empty($comandoVerificarFF) {
+
+    // AQUI estava o erro, já corrigido:
+    if (empty($comandoVerificarFF)) {
         echo $bold . $vermelho . "[!] Free Fire TH não está instalado no dispositivo.\n" . $cln;
         die;
     }
@@ -98,7 +99,7 @@ function verificar_freefire_th() {
     $rootDetectado = false;
     foreach ($comandoVerificacoes as $comando) {
         $resultado = shell_exec($comando);
-        if (!empty($resultado) {
+        if (!empty($resultado)) {
             $rootDetectado = true;
             break;
         }
@@ -135,7 +136,7 @@ function verificar_freefire_th() {
     // Verificar shaders
     echo $bold . $azul . "[+] Verificando arquivos de shaders...\n";
     $pastaShaders = "/sdcard/Android/data/com.dts.freefireth/files/contentcache/Optional/android/gameassetbundles";
-    $comandoShaders = "adb shell \"find " . escapeshellarg($pastaShaders) . " -name \"shaders*\" -type f 2>/dev/null\"";
+    $comandoShaders = "adb shell \"find " . escapeshellarg($pastaShaders) . " -name \\\"shaders*\\\" -type f 2>/dev/null\"";
     $arquivosShaders = shell_exec($comandoShaders);
     
     if (!empty($arquivosShaders)) {
@@ -148,8 +149,7 @@ function verificar_freefire_th() {
 }
 
 function verificar_freefire_max() {
-    // Implementação similar à verificar_freefire_th() mas para Free Fire MAX
-    // [... código omitido por brevidade ...]
+    echo "Função FF MAX ainda não implementada.\n";
 }
 
 // Menu principal
@@ -180,3 +180,4 @@ switch ($opcao) {
         echo $bold . $vermelho . "Opção inválida!\n" . $cln;
         break;
 }
+?>
