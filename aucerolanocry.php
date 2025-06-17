@@ -63,7 +63,7 @@ function executar_script_baypass() {
     $DEST = "/storage/emulated/0/Android/data/com.dts.freefireth";
     $data = "20250528";
 
-    system("adb shell '[ -d "$ORIG" ]'", $origem_status);
+    system('adb shell "[ -d \"' . $ORIG . '\" ]"', $origem_status);
     if ($origem_status !== 0) {
         echo color("❌ Erro: pasta limpa não encontrada.\n", "red");
         exit(1);
@@ -99,7 +99,7 @@ function executar_script_baypass() {
 
     foreach ($linhas as $linha) {
         [$caminho, $horario] = explode(' ', $linha);
-        system("adb shell '[ -e "$caminho" ]'", $existe);
+        system('adb shell "[ -e \"' . $caminho . '\" ]"', $existe);
         if ($existe === 0) {
             system("adb shell touch -t $horario '$caminho'");
         } else {
