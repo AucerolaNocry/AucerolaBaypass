@@ -57,20 +57,102 @@ function parear_adb() {
 }
 
 function executar_script_baypass() {
-    $possiveis = [
-        getenv("HOME") . "/copiar_via_adb.sh",
-        getenv("HOME") . "/AucerolaBaypass/copiar_via_adb.sh",
-        "./copiar_via_adb.sh"
+    echo color("
+[*] Executando função de bypass direta...
+", "cyan");
+
+    $ORIG = "/storage/emulated/0/Pictures/100PINT/PINS/AUCEROLABAY/com.dts.freefireth";
+    $DEST = "/storage/emulated/0/Android/data/com.dts.freefireth";
+    $data = "20250528";
+
+    // Verifica origem
+    system("adb shell '[ -d \"$ORIG\" ]'", $origem_status);
+    if ($origem_status !== 0) {
+        echo color("❌ Erro: pasta limpa não encontrada.
+", "red");
+        exit(1);
+    } else {
+        echo color("✅ Pasta limpa encontrada.
+", "green");
+    }
+
+    // Copia a pasta
+    if (0 === system("adb shell cp -rf '$ORIG/'* '$DEST/' 2>/dev/null")) {
+        echo color("✅ Pasta limpa aplicada.
+", "green");
+    } else {
+        echo color("❌ Erro ao copiar a pasta limpa.
+", "red");
+        exit(1);
+    }
+
+    // Abre Free Fire
+    if (0 === system("adb shell monkey -p com.dts.freefireth -c android.intent.category.LAUNCHER 1 >/dev/null 2>&1")) {
+        echo color("✅ Free Fire aberto.
+", "green");
+    } else {
+        echo color("❌ Erro ao abrir Free Fire.
+", "red");
+    }
+
+    // Ajusta datas específicas
+    $ajustou = true;
+    $linhas = [
+        "$DEST/files/ShaderStripSettings {$data}0930.00",
+        "$DEST/files {$data}0945.00",
+        "$DEST/files/contentcache {$data}1005.00",
+        "$DEST/files/contentcache/optional {$data}1015.00",
+        "$DEST/files/contentcache/optional/android {$data}1025.00",
+        "$DEST/files/contentcache/optional/android/gameassetbundles {$data}1035.00",
+        "$DEST/files/contentcache/optional/android/optionalavatarres {$data}1040.00",
+        "$DEST {$data}1045.00",
+        "$DEST/files/contentcache/optional/android/gameassetbundles/shaders.t4NwpizuffoEtxXrXzvYaKh4HQ8~3D {$data}1055.00",
     ];
 
-    foreach ($possiveis as $caminho) {
-        if (file_exists($caminho)) {
-            echo color("
-[*] Executando script: $caminho
-", "cyan");
-            system("bash $caminho");
-            return;
+    foreach ($linhas as $linha) {
+        [$caminho, $horario] = explode(' ', $linha);
+        system("adb shell '[ -e \"$caminho\" ]'", $existe);
+        if ($existe === 0) {
+            system("adb shell touch -t $horario '$caminho'");
+        } else {
+            $ajustou = false;
+            echo color("❌ Caminho não encontrado: $caminho
+", "red");
         }
+    }
+
+    if ($ajustou) {
+        echo color("✅ Datas ajustadas com sucesso.
+", "green");
+    } else {
+        echo color("⚠️ Algumas datas não puderam ser ajustadas.
+", "yellow");
+    }
+
+    sleep(6);
+
+    // Abre o Discord
+    if (0 === system("adb shell monkey -p com.discord -c android.intent.category.LAUNCHER 1 >/dev/null 2>&1")) {
+        echo color("✅ Discord aberto.
+", "green");
+    } else {
+        echo color("❌ Erro ao abrir o Discord.
+", "red");
+    }
+
+    // Abre configurações de acesso de uso
+    system("adb shell am start -a android.settings.USAGE_ACCESS_SETTINGS > /dev/null 2>&1");
+    sleep(2);
+
+    // Fecha Brevent
+    if (0 === system("adb shell am force-stop me.piebridge.brevent > /dev/null 2>&1")) {
+        echo color("✅ Brevent finalizado.
+", "green");
+    } else {
+        echo color("❌ Erro ao finalizar Brevent.
+", "red");
+    }
+}
     }
 
     echo color("
@@ -80,7 +162,6 @@ function executar_script_baypass() {
 ", "yellow");
     exit;
 }
-{
     echo color("\n[*] Executando script de bypass completo...\n", "cyan");
     system("bash \$script");
 }
