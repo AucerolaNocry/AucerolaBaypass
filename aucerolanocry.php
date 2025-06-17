@@ -1,4 +1,4 @@
-<?php 
+<?php
 function color($string, $color) {
     $colors = [
         'reset'   => "\033[0m",
@@ -57,12 +57,29 @@ function parear_adb() {
 }
 
 function executar_script_baypass() {
-    $script = "/data/data/com.termux/files/home/copiar_via_adb.sh";
-    if (!file_exists($script)) {
-        echo color("\n[!] Script copiar_via_adb.sh não encontrado em \$HOME!\n", "red");
-        echo color("[!] Mova o script para \$HOME ou corrija o caminho no menu.", "yellow");
-        exit;
+    $possiveis = [
+        getenv("HOME") . "/copiar_via_adb.sh",
+        getenv("HOME") . "/AucerolaBaypass/copiar_via_adb.sh",
+        "./copiar_via_adb.sh"
+    ];
+
+    foreach ($possiveis as $caminho) {
+        if (file_exists($caminho)) {
+            echo color("
+[*] Executando script: $caminho
+", "cyan");
+            system("bash $caminho");
+            return;
+        }
     }
+
+    echo color("
+[!] Script copiar_via_adb.sh não encontrado em nenhum dos locais esperados!
+", "red");
+    echo color("[!] Verifique se ele foi baixado corretamente e tente novamente.
+", "yellow");
+    exit;
+}
     echo color("\n[*] Executando script de bypass completo...\n", "cyan");
     system("bash \$script");
 }
