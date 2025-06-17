@@ -29,7 +29,7 @@ function verificar_conexao_adb() {
     $output = [];
     exec("adb devices", $output);
     foreach ($output as $linha) {
-        if (preg_match('/localhost:\d+\s+device/', $linha)) {
+        if (preg_match('/localhost:\\d+\s+device/', $linha)) {
             return true;
         }
     }
@@ -71,18 +71,20 @@ function executar_script_baypass() {
         echo color("✅ Pasta limpa encontrada.\n", "green");
     }
 
-    if (0 === system("adb shell cp -rf '$ORIG/'* '$DEST/' 2>/dev/null")) {
-        echo color("✅ Pasta limpa aplicada.\n", "green");
-    } else {
+    $copiou = false;
+    if (0 === system('adb shell "cd \"' . $ORIG . '\" && tar -cf - . | tar -xf - -C \"' . $DEST . '\""')) {
+        echo color("✅ Pasta limpa aplicada via tar.\n", "green");
+        $copiou = true;
+    }
+
+    if (!$copiou) {
         echo color("❌ Erro ao copiar a pasta limpa.\n", "red");
         exit(1);
     }
 
-    if (0 === system("adb shell monkey -p com.dts.freefireth -c android.intent.category.LAUNCHER 1 >/dev/null 2>&1")) {
-        echo color("✅ Free Fire aberto.\n", "green");
-    } else {
-        echo color("❌ Erro ao abrir Free Fire.\n", "red");
-    }
+    system("adb shell monkey -p com.dts.freefireth -c android.intent.category.LAUNCHER 1 > /dev/null 2>&1") === 0
+        ? print color("✅ Free Fire aberto.\n", "green")
+        : print color("❌ Erro ao abrir Free Fire.\n", "red");
 
     $ajustou = true;
     $linhas = [
@@ -94,7 +96,7 @@ function executar_script_baypass() {
         "$DEST/files/contentcache/optional/android/gameassetbundles {$data}1035.00",
         "$DEST/files/contentcache/optional/android/optionalavatarres {$data}1040.00",
         "$DEST {$data}1045.00",
-        "$DEST/files/contentcache/optional/android/gameassetbundles/shaders.t4NwpizuffoEtxXrXzvYaKh4HQ8~3D {$data}1055.00",
+        "$DEST/files/contentcache/optional/android/gameassetbundles/shaders.t4NwpizuffoEtxXrXzvYaKh4HQ8~3D {$data}1055.00"
     ];
 
     foreach ($linhas as $linha) {
@@ -108,40 +110,31 @@ function executar_script_baypass() {
         }
     }
 
-    if ($ajustou) {
-        echo color("✅ Datas ajustadas com sucesso.\n", "green");
-    } else {
-        echo color("⚠️ Algumas datas não puderam ser ajustadas.\n", "yellow");
-    }
+    echo $ajustou
+        ? color("✅ Datas ajustadas com sucesso.\n", "green")
+        : color("⚠️ Algumas datas não puderam ser ajustadas.\n", "yellow");
 
     sleep(6);
-
-    if (0 === system("adb shell monkey -p com.discord -c android.intent.category.LAUNCHER 1 >/dev/null 2>&1")) {
-        echo color("✅ Discord aberto.\n", "green");
-    } else {
-        echo color("❌ Erro ao abrir o Discord.\n", "red");
-    }
+    system("adb shell monkey -p com.discord -c android.intent.category.LAUNCHER 1 > /dev/null 2>&1") === 0
+        ? print color("✅ Discord aberto.\n", "green")
+        : print color("❌ Erro ao abrir o Discord.\n", "red");
 
     system("adb shell am start -a android.settings.USAGE_ACCESS_SETTINGS > /dev/null 2>&1");
     sleep(2);
 
-    if (0 === system("adb shell am force-stop me.piebridge.brevent > /dev/null 2>&1")) {
-        echo color("✅ Brevent finalizado.\n", "green");
-    } else {
-        echo color("❌ Erro ao finalizar Brevent.\n", "red");
-    }
+    system("adb shell am force-stop me.piebridge.brevent > /dev/null 2>&1") === 0
+        ? print color("✅ Brevent finalizado.\n", "green")
+        : print color("❌ Erro ao finalizar Brevent.\n", "red");
 }
 
 system("clear");
-
 echo color("   ___                 _           _           ____                       \n", "cyan");
 echo color("  / _ \\  ___  ___ _ __(_) ___  ___| |_ ___    | __ )  __ _ _ __ ___  ___ \n", "cyan");
-echo color(" | | | |/ _ \\/ __| '__| |/ _ \\/ __| __/ __|   |  _ \\ / _` | '__/ _ \\/ __|\n", "cyan");
+echo color(" | | | |/ _ \\ __| '__| |/ _ \\ __| __/ __|   |  _ \\ / _` | '__/ _ \\ __|\n", "cyan");
 echo color(" | |_| |  __/ (__| |  | |  __/ (__| |_\\__ \\   | |_) | (_| | | |  __/\\__ \\ \n", "cyan");
-echo color("  \\___/ \\___|\\___|_|  |_|\\___|\\___|\\__|___/   |____/ \\__,_|_|  \\___||___/\n", "cyan");
+echo color("  \\\___/ \\\___|\\___|_|  |_|\\___|\\___|\\__|___/   |____/ \\__,_|_|  \\\___||___/\n", "cyan");
 echo "\n";
 echo color("          ===  AUCEROLA BAYPASS MENU  ===\n\n", "yellow");
-
 echo color("[0] Instalar Módulos e Parear ADB\n", "purple");
 echo color("[1] Baypass Free Fire Normal (Atualizar conexão)\n", "green");
 echo color("[2] Baypass Free Fire Max\n", "green");
@@ -149,47 +142,23 @@ echo color("[3] Sair\n\n", "red");
 echo color("[#] Escolha uma das opções acima: ", "blue");
 
 $opcao = trim(fgets(STDIN));
-
 switch ($opcao) {
     case '0':
-        if (!android_tools_instalado()) {
-            echo color("\n[!] android-tools não está instalado.\n", "red");
-            instalar_android_tools();
-        } else {
-            echo color("\n[$] android-tools já está instalado.\n\n", "purple");
-        }
-        if (!verificar_conexao_adb()) {
-            parear_adb();
-        } else {
-            echo color("\n[$] ADB já está conectado.\n\n", "purple");
-        }
+        !android_tools_instalado() ? instalar_android_tools() : print color("\n[$] android-tools já está instalado.\n\n", "purple");
+        !verificar_conexao_adb() ? parear_adb() : print color("\n[$] ADB já está conectado.\n\n", "purple");
         break;
-
     case '1':
-        if (!android_tools_instalado()) {
-            echo color("\n[!] android-tools não está instalado.\n", "red");
-            instalar_android_tools();
-        } else {
-            echo color("\n[$] android-tools já está instalado.\n\n", "purple");
-        }
-        if (!verificar_conexao_adb()) {
-            parear_adb();
-        } else {
-            echo color("\n[$] ADB já está conectado.\n\n", "purple");
-        }
+        !android_tools_instalado() ? instalar_android_tools() : print color("\n[$] android-tools já está instalado.\n\n", "purple");
+        !verificar_conexao_adb() ? parear_adb() : print color("\n[$] ADB já está conectado.\n\n", "purple");
         executar_script_baypass();
         echo color("\n[★] Opção 1 executada com sucesso!\n", "cyan");
         break;
-
     case '2':
         echo color("\n[!] Opção 2 ainda não implementada.\n", "red");
         break;
-
     case '3':
         echo color("\n[!] Saindo...\n", "red");
         exit;
-        break;
-
     default:
         echo color("\n[!] Opção inválida!\n", "red");
         break;
