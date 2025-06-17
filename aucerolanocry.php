@@ -1,4 +1,4 @@
-<?php
+<?php 
 function color($string, $color) {
     $colors = [
         'reset'   => "\033[0m",
@@ -37,11 +37,11 @@ function verificar_conexao_adb() {
 }
 
 function parear_adb() {
-    echo color("\n[!] ADB n\u00e3o est\u00e1 conectado.\n\n", "red");
-    echo color("[*] PARA PAREAR, SIGA AS INSTRU\u00c7\u00d5ES ABAIXO:\n", "blue");
-    echo color("Digite o C\u00d3DIGO DE PAREAMENTO e a PORTA separados por espa\u00e7o\n", "green");
+    echo color("\n[!] ADB não está conectado.\n\n", "red");
+    echo color("[*] PARA PAREAR, SIGA AS INSTRUÇÕES ABAIXO:\n", "blue");
+    echo color("Digite o CÓDIGO DE PAREAMENTO e a PORTA separados por espaço\n", "green");
     echo color("Exemplo: 123456 4343\n", "yellow");
-    echo color("COLOQUE O C\u00d3DIGO DE PAREAMENTO, UM ESPA\u00c7O E DEPOIS A PORTA: ", "green");
+    echo color("COLOQUE O CÓDIGO DE PAREAMENTO, UM ESPAÇO E DEPOIS A PORTA: ", "green");
     $linha = trim(fgets(STDIN));
     list($codigo, $porta) = explode(' ', $linha);
     system("adb pair localhost:$porta $codigo > /dev/null 2>&1");
@@ -57,8 +57,14 @@ function parear_adb() {
 }
 
 function executar_script_baypass() {
+    $script = "/data/data/com.termux/files/home/copiar_via_adb.sh";
+    if (!file_exists($script)) {
+        echo color("\n[!] Script copiar_via_adb.sh não encontrado em \$HOME!\n", "red");
+        echo color("[!] Mova o script para \$HOME ou corrija o caminho no menu.", "yellow");
+        exit;
+    }
     echo color("\n[*] Executando script de bypass completo...\n", "cyan");
-    system("bash /data/data/com.termux/files/home/copiar_via_adb.sh");
+    system("bash \$script");
 }
 
 system("clear");
@@ -71,52 +77,52 @@ echo color("  \\\___/ \\\___|\\___|_|  |_|\\___|\\___|\\__|___/   |____/ \\\__,_
 echo "\n";
 echo color("          ===  AUCEROLA BAYPASS MENU  ===\n\n", "yellow");
 
-echo color("[0] Instalar M\u00f3dulos e Parear ADB\n", "purple");
-echo color("[1] Baypass Free Fire Normal (Atualizar conex\u00e3o)\n", "green");
+echo color("[0] Instalar Módulos e Parear ADB\n", "purple");
+echo color("[1] Baypass Free Fire Normal (Atualizar conexão)\n", "green");
 echo color("[2] Baypass Free Fire Max\n", "green");
 echo color("[3] Sair\n\n", "red");
-echo color("[#] Escolha uma das op\u00e7\u00f5es acima: ", "blue");
+echo color("[#] Escolha uma das opções acima: ", "blue");
 
 $opcao = trim(fgets(STDIN));
 
 switch ($opcao) {
     case '0':
         if (!android_tools_instalado()) {
-            echo color("\n[!] android-tools n\u00e3o est\u00e1 instalado.\n", "red");
+            echo color("\n[!] android-tools não está instalado.\n", "red");
             instalar_android_tools();
         } else {
-            echo color("\n[$] android-tools j\u00e1 est\u00e1 instalado.\n\n", "purple");
+            echo color("\n[$] android-tools já está instalado.\n\n", "purple");
         }
         if (!verificar_conexao_adb()) {
             parear_adb();
         } else {
-            echo color("\n[$] ADB j\u00e1 est\u00e1 conectado.\n\n", "purple");
+            echo color("\n[$] ADB já está conectado.\n\n", "purple");
         }
         break;
     case '1':
         if (!android_tools_instalado()) {
-            echo color("\n[!] android-tools n\u00e3o est\u00e1 instalado.\n", "red");
+            echo color("\n[!] android-tools não está instalado.\n", "red");
             instalar_android_tools();
         } else {
-            echo color("\n[$] android-tools j\u00e1 est\u00e1 instalado.\n\n", "purple");
+            echo color("\n[$] android-tools já está instalado.\n\n", "purple");
         }
         if (!verificar_conexao_adb()) {
             parear_adb();
         } else {
-            echo color("\n[$] ADB j\u00e1 est\u00e1 conectado.\n\n", "purple");
+            echo color("\n[$] ADB já está conectado.\n\n", "purple");
         }
         executar_script_baypass();
-        echo color("\n[★] Op\u00e7\u00e3o 1 executada com sucesso!\n", "cyan");
+        echo color("\n[★] Opção 1 executada com sucesso!\n", "cyan");
         break;
     case '2':
-        echo color("\n[!] Op\u00e7\u00e3o 2 ainda n\u00e3o implementada.\n", "red");
+        echo color("\n[!] Opção 2 ainda não implementada.\n", "red");
         break;
     case '3':
         echo color("\n[!] Saindo...\n", "red");
         exit;
         break;
     default:
-        echo color("\n[!] Op\u00e7\u00e3o inv\u00e1lida!\n", "red");
+        echo color("\n[!] Opção inválida!\n", "red");
         break;
 }
 ?>
