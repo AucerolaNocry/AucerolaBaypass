@@ -80,6 +80,7 @@ function executar_script_baypass() {
 ", "yellow");
     exit;
 }
+{
     echo color("\n[*] Executando script de bypass completo...\n", "cyan");
     system("bash \$script");
 }
