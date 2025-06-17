@@ -29,7 +29,7 @@ function verificar_conexao_adb() {
     $output = [];
     exec("adb devices", $output);
     foreach ($output as $linha) {
-        if (preg_match('/localhost:\\d+\s+device/', $linha)) {
+        if (preg_match('/localhost:\d+\s+device/', $linha)) {
             return true;
         }
     }
@@ -57,45 +57,33 @@ function parear_adb() {
 }
 
 function executar_script_baypass() {
-    echo color("
-[*] Executando função de bypass direta...
-", "cyan");
+    echo color("\n[*] Executando função de bypass direta...\n", "cyan");
 
     $ORIG = "/storage/emulated/0/Pictures/100PINT/PINS/AUCEROLABAY/com.dts.freefireth";
     $DEST = "/storage/emulated/0/Android/data/com.dts.freefireth";
     $data = "20250528";
 
-    // Verifica origem
-    system("adb shell '[ -d \"$ORIG\" ]'", $origem_status);
+    system("adb shell '[ -d "$ORIG" ]'", $origem_status);
     if ($origem_status !== 0) {
-        echo color("❌ Erro: pasta limpa não encontrada.
-", "red");
+        echo color("❌ Erro: pasta limpa não encontrada.\n", "red");
         exit(1);
     } else {
-        echo color("✅ Pasta limpa encontrada.
-", "green");
+        echo color("✅ Pasta limpa encontrada.\n", "green");
     }
 
-    // Copia a pasta
     if (0 === system("adb shell cp -rf '$ORIG/'* '$DEST/' 2>/dev/null")) {
-        echo color("✅ Pasta limpa aplicada.
-", "green");
+        echo color("✅ Pasta limpa aplicada.\n", "green");
     } else {
-        echo color("❌ Erro ao copiar a pasta limpa.
-", "red");
+        echo color("❌ Erro ao copiar a pasta limpa.\n", "red");
         exit(1);
     }
 
-    // Abre Free Fire
     if (0 === system("adb shell monkey -p com.dts.freefireth -c android.intent.category.LAUNCHER 1 >/dev/null 2>&1")) {
-        echo color("✅ Free Fire aberto.
-", "green");
+        echo color("✅ Free Fire aberto.\n", "green");
     } else {
-        echo color("❌ Erro ao abrir Free Fire.
-", "red");
+        echo color("❌ Erro ao abrir Free Fire.\n", "red");
     }
 
-    // Ajusta datas específicas
     $ajustou = true;
     $linhas = [
         "$DEST/files/ShaderStripSettings {$data}0930.00",
@@ -111,60 +99,37 @@ function executar_script_baypass() {
 
     foreach ($linhas as $linha) {
         [$caminho, $horario] = explode(' ', $linha);
-        system("adb shell '[ -e \"$caminho\" ]'", $existe);
+        system("adb shell '[ -e "$caminho" ]'", $existe);
         if ($existe === 0) {
             system("adb shell touch -t $horario '$caminho'");
         } else {
             $ajustou = false;
-            echo color("❌ Caminho não encontrado: $caminho
-", "red");
+            echo color("❌ Caminho não encontrado: $caminho\n", "red");
         }
     }
 
     if ($ajustou) {
-        echo color("✅ Datas ajustadas com sucesso.
-", "green");
+        echo color("✅ Datas ajustadas com sucesso.\n", "green");
     } else {
-        echo color("⚠️ Algumas datas não puderam ser ajustadas.
-", "yellow");
+        echo color("⚠️ Algumas datas não puderam ser ajustadas.\n", "yellow");
     }
 
     sleep(6);
 
-    // Abre o Discord
     if (0 === system("adb shell monkey -p com.discord -c android.intent.category.LAUNCHER 1 >/dev/null 2>&1")) {
-        echo color("✅ Discord aberto.
-", "green");
+        echo color("✅ Discord aberto.\n", "green");
     } else {
-        echo color("❌ Erro ao abrir o Discord.
-", "red");
+        echo color("❌ Erro ao abrir o Discord.\n", "red");
     }
 
-    // Abre configurações de acesso de uso
     system("adb shell am start -a android.settings.USAGE_ACCESS_SETTINGS > /dev/null 2>&1");
     sleep(2);
 
-    // Fecha Brevent
     if (0 === system("adb shell am force-stop me.piebridge.brevent > /dev/null 2>&1")) {
-        echo color("✅ Brevent finalizado.
-", "green");
+        echo color("✅ Brevent finalizado.\n", "green");
     } else {
-        echo color("❌ Erro ao finalizar Brevent.
-", "red");
+        echo color("❌ Erro ao finalizar Brevent.\n", "red");
     }
-}
-{ }
-{
-    echo color("
-[!] Script copiar_via_adb.sh não encontrado em nenhum dos locais esperados!
-", "red");
-    echo color("[!] Verifique se ele foi baixado corretamente e tente novamente.
-", "yellow");
-    exit;
-}
-{
-    echo color("\n[*] Executando script de bypass completo...\n", "cyan");
-    system("bash \$script");
 }
 
 system("clear");
@@ -173,7 +138,7 @@ echo color("   ___                 _           _           ____                 
 echo color("  / _ \\  ___  ___ _ __(_) ___  ___| |_ ___    | __ )  __ _ _ __ ___  ___ \n", "cyan");
 echo color(" | | | |/ _ \\/ __| '__| |/ _ \\/ __| __/ __|   |  _ \\ / _` | '__/ _ \\/ __|\n", "cyan");
 echo color(" | |_| |  __/ (__| |  | |  __/ (__| |_\\__ \\   | |_) | (_| | | |  __/\\__ \\ \n", "cyan");
-echo color("  \\\___/ \\\___|\\___|_|  |_|\\___|\\___|\\__|___/   |____/ \\\__,_|_|  \\\___||___/\n", "cyan");
+echo color("  \\___/ \\___|\\___|_|  |_|\\___|\\___|\\__|___/   |____/ \\__,_|_|  \\___||___/\n", "cyan");
 echo "\n";
 echo color("          ===  AUCEROLA BAYPASS MENU  ===\n\n", "yellow");
 
@@ -199,6 +164,7 @@ switch ($opcao) {
             echo color("\n[$] ADB já está conectado.\n\n", "purple");
         }
         break;
+
     case '1':
         if (!android_tools_instalado()) {
             echo color("\n[!] android-tools não está instalado.\n", "red");
@@ -214,13 +180,16 @@ switch ($opcao) {
         executar_script_baypass();
         echo color("\n[★] Opção 1 executada com sucesso!\n", "cyan");
         break;
+
     case '2':
         echo color("\n[!] Opção 2 ainda não implementada.\n", "red");
         break;
+
     case '3':
         echo color("\n[!] Saindo...\n", "red");
         exit;
         break;
+
     default:
         echo color("\n[!] Opção inválida!\n", "red");
         break;
