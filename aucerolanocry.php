@@ -154,7 +154,7 @@ function executar_script_baypass() {
     }
 }
 { }
-
+{
     echo color("
 [!] Script copiar_via_adb.sh não encontrado em nenhum dos locais esperados!
 ", "red");
@@ -162,6 +162,7 @@ function executar_script_baypass() {
 ", "yellow");
     exit;
 }
+{
     echo color("\n[*] Executando script de bypass completo...\n", "cyan");
     system("bash \$script");
 }
