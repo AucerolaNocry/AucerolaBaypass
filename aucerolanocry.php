@@ -153,7 +153,7 @@ function executar_script_baypass() {
 ", "red");
     }
 }
-    }
+{ }
 
     echo color("
 [!] Script copiar_via_adb.sh não encontrado em nenhum dos locais esperados!
