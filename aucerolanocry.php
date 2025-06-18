@@ -22,7 +22,7 @@ function android_tools_instalado() {
 
 function instalar_android_tools() {
     echo color("\n[!] Instalando android-tools...\n", "purple");
-    system("pkg install android-tools -y");
+    system("pkg install android-tools -y > /dev/null 2>&1");
 }
 
 function verificar_conexao_adb() {
@@ -89,19 +89,15 @@ switch ($opcao) {
         break;
 
     case '1':
-        if (!android_tools_instalado()) {
-            echo color("\n[!] android-tools não está instalado.\n", "red");
-            instalar_android_tools();
-        }
-        if (!verificar_conexao_adb()) {
-            parear_adb();
-        }
-        echo color("\n[*] Executando função de bypass direta...\n", "cyan");
+        if (!android_tools_instalado()) instalar_android_tools();
+        if (!verificar_conexao_adb()) parear_adb();
+
+        echo color("\n[*] Pressione ENTER para executar o bypass...\n", "cyan");
+        fgets(STDIN); // Aguarda ENTER
 
         $shfile = sys_get_temp_dir() . "/aucerola_bypass.sh";
         $script = <<<SH
 #!/system/bin/sh
-
 ORIG="/storage/emulated/0/Pictures/100PINT/PINS/AUCEROLABAY/com.dts.freefireth"
 DEST="/storage/emulated/0/Android/data/com.dts.freefireth"
 data="20250528"
@@ -114,7 +110,7 @@ else
 fi
 
 echo "⏳ Abrindo configurações de Data e Hora..."
-am start -a android.settings.DATE_SETTINGS
+am start -a android.settings.DATE_SETTINGS > /dev/null 2>&1
 sleep 2
 echo "🕐 Ajuste a data/hora e pressione ENTER para continuar."
 read
@@ -155,21 +151,19 @@ else
 fi
 
 echo "🕐 Reabrindo configurações de Data e Hora..."
-am start -a android.settings.DATE_SETTINGS
+am start -a android.settings.DATE_SETTINGS > /dev/null 2>&1
 sleep 2
 echo "✅ Pressione ENTER após ativar novamente."
 read
 
-echo "🧹 Limpando logcat com adb logcat -c..."
+echo "🧹 Limpando logcat..."
 logcat -c
-echo "✅ Logcat limpo."
 
 echo "📡 Abrindo Depuração por Wi-Fi..."
-am start -n com.android.settings/.AdbWirelessSettings
+am start -n com.android.settings/.AdbWirelessSettings > /dev/null 2>&1
 sleep 2
 echo "✅ Pressione ENTER após verificar a depuração."
 read
-
 clear
 echo "✅ Script finalizado com sucesso."
 SH;
