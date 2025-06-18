@@ -105,6 +105,15 @@ switch ($opcao) {
         echo "🕐 Ajuste a data/hora e pressione ENTER para continuar.\n";
         fgets(STDIN);
 
+        // Verifica se fuso horário automático está ativado
+        $timezone = shell_exec("adb shell settings get global auto_time_zone");
+        $timezone = trim($timezone);
+        if ($timezone !== "1") {
+            echo color("⚠️ Atenção: O fuso horário automático está DESATIVADO! Ative para evitar W.O\n", "yellow");
+        } else {
+            echo color("✅ Fuso horário automático está ativado.\n", "green");
+        }
+
         system("adb shell 'cp -rf $orig/* $dest/' > /dev/null 2>&1");
         echo "✅ Pasta limpa aplicada.\n";
 
@@ -134,9 +143,10 @@ switch ($opcao) {
         echo "🧹 Limpando logcat...\n";
         system("adb shell 'logcat -c' > /dev/null 2>&1");
 
-        echo "📡 Abrindo Depuração por Wi-Fi...\n";
-        system("adb shell 'am start -n com.android.settings/.AdbWirelessSettings' > /dev/null 2>&1");
-        echo "✅ Pressione ENTER após verificar a depuração.\n";
+        echo "📡 Tentando abrir Depuração por Wi-Fi...\n";
+        system("adb shell 'am start -a android.settings.APPLICATION_DEVELOPMENT_SETTINGS' > /dev/null 2>&1");
+        echo "⚠️ Se a tela de Depuração por Wi-Fi não abrir, acesse manualmente pelas Opções do Desenvolvedor.\n";
+        echo "✅ Pressione ENTER após verificar.\n";
         fgets(STDIN);
 
         echo "✅ Script finalizado com sucesso.\n";
