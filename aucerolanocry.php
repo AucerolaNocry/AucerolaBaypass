@@ -1,4 +1,5 @@
 <?php
+
 function color(\$string, \$color) {
     \$colors = [
         'reset'   => "\033[0m",
@@ -188,4 +189,5 @@ SH;
         echo color("\n[!] Opção inválida!\n", "red");
         break;
 } 
+
 ?>
