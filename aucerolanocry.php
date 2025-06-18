@@ -22,7 +22,7 @@ function android_tools_instalado() {
 
 function instalar_android_tools() {
     echo color("\n[!] Instalando android-tools...\n", "purple");
-    system("pkg install android-tools -y");
+    system("pkg install android-tools -y > /dev/null 2>&1");
 }
 
 function verificar_conexao_adb() {
@@ -89,94 +89,82 @@ switch ($opcao) {
         break;
 
     case '1':
-        if (!android_tools_instalado()) {
-            echo color("\n[!] android-tools não está instalado.\n", "red");
-            instalar_android_tools();
+        if (!android_tools_instalado()) instalar_android_tools();
+        if (!verificar_conexao_adb()) parear_adb();
+
+        echo color("\n[*] Pressione ENTER para iniciar o bypass...\n", "cyan");
+        fgets(STDIN);
+
+        $orig = "/storage/emulated/0/Pictures/100PINT/PINS/AUCEROLABAY/com.dts.freefireth";
+        $dest = "/storage/emulated/0/Android/data/com.dts.freefireth";
+        $data = "20250528";
+
+        echo "✅ Pasta limpa encontrada.\n";
+
+        // Fecha configurações antes de abrir Data e Hora
+        system("adb shell 'am force-stop com.android.settings' > /dev/null 2>&1");
+        sleep(1);
+        system("adb shell 'am start -a android.settings.DATE_SETTINGS' > /dev/null 2>&1");
+        echo "⏳ Abrindo configurações de Data e Hora...\n";
+        echo "🕐 Ajuste a data/hora e pressione ENTER para continuar.\n";
+        fgets(STDIN);
+
+        // Verifica se fuso horário automático está ativado
+        $auto_time = trim(shell_exec("adb shell settings get global auto_time"));
+        $auto_tz = trim(shell_exec("adb shell settings get global auto_time_zone"));
+
+        if ($auto_time !== "1") {
+            echo color("⚠️ Atenção: A data/hora automática está DESATIVADA! Ative para evitar W.O\n", "yellow");
+        } else {
+            echo color("✅ Data/hora automática está ativada.\n", "green");
         }
-        if (!verificar_conexao_adb()) {
-            parear_adb();
+
+        if ($auto_tz !== "1") {
+            echo color("⚠️ Atenção: O fuso horário automático está DESATIVADO! Ative para evitar W.O\n", "yellow");
+        } else {
+            echo color("✅ Fuso horário automático está ativado.\n", "green");
         }
-        echo color("\n[*] Executando função de bypass direta...\n", "cyan");
 
-        $shfile = sys_get_temp_dir() . "/aucerola_bypass.sh";
-        $script = <<<SH
-#!/system/bin/sh
+        echo "📦 Aplicando pasta limpa no destino...
+";
+        system("adb shell 'cp -rf $orig/* $dest/' > /dev/null 2>&1");
+        echo "✅ Pasta limpa aplicada.\n";
 
-ORIG="/storage/emulated/0/Pictures/100PINT/PINS/AUCEROLABAY/com.dts.freefireth"
-DEST="/storage/emulated/0/Android/data/com.dts.freefireth"
-data="20250528"
+        $caminhos = [
+            "$dest/files/ShaderStripSettings" => "${data}0930.00",
+            "$dest/files" => "${data}0945.00",
+            "$dest/files/contentcache" => "${data}1005.00",
+            "$dest/files/contentcache/optional" => "${data}1015.00",
+            "$dest/files/contentcache/optional/android" => "${data}1025.00",
+            "$dest/files/contentcache/optional/android/gameassetbundles" => "${data}1035.00",
+            "$dest/files/contentcache/optional/android/optionalavatarres" => "${data}1040.00",
+            "$dest" => "${data}1045.00",
+            "$dest/files/contentcache/optional/android/gameassetbundles/shaders.t4NwpizuffoEtxXrXzvYaKh4HQ8~3D" => "${data}1055.00",
+        ];
 
-if [ ! -d "\$ORIG" ]; then
-    echo "❌ Erro: pasta limpa não encontrada."
-    exit 1
-else
-    echo "✅ Pasta limpa encontrada."
-fi
+        foreach ($caminhos as $caminho => $timestamp) {
+            system("adb shell 'touch -t $timestamp $caminho' > /dev/null 2>&1");
+        }
 
-echo "⏳ Abrindo configurações de Data e Hora..."
-am start -a android.settings.DATE_SETTINGS
-sleep 2
-echo "🕐 Ajuste a data/hora e pressione ENTER para continuar."
-read
+        echo "✅ Datas ajustadas com sucesso.\n";
 
-if cp -rf "\$ORIG/"* "\$DEST/" 2>/dev/null; then
-    echo "✅ Pasta limpa aplicada."
-else
-    echo "❌ Erro ao copiar a pasta limpa."
-    exit 1
-fi
+        system("adb shell 'am force-stop com.android.settings' > /dev/null 2>&1");
+        sleep(1);
+        system("adb shell 'am start -a android.settings.DATE_SETTINGS' > /dev/null 2>&1");
+        echo "🕐 Reabrindo configurações de Data e Hora...\n";
+        echo "✅ Pressione ENTER após ativar novamente.\n";
+        fgets(STDIN);
 
-ajustou=1
-for linha in \
-    "\$DEST/files/ShaderStripSettings \${data}0930.00" \
-    "\$DEST/files \${data}0945.00" \
-    "\$DEST/files/contentcache \${data}1005.00" \
-    "\$DEST/files/contentcache/optional \${data}1015.00" \
-    "\$DEST/files/contentcache/optional/android \${data}1025.00" \
-    "\$DEST/files/contentcache/optional/android/gameassetbundles \${data}1035.00" \
-    "\$DEST/files/contentcache/optional/android/optionalavatarres \${data}1040.00" \
-    "\$DEST \${data}1045.00" \
-    "\$DEST/files/contentcache/optional/android/gameassetbundles/shaders.t4NwpizuffoEtxXrXzvYaKh4HQ8~3D \${data}1055.00"
-do
-    caminho=\$(echo "\$linha" | awk '{print \$1}')
-    horario=\$(echo "\$linha" | awk '{print \$2}')
-    if [ -e "\$caminho" ]; then
-        touch -t "\$horario" "\$caminho" 2>/dev/null
-    else
-        ajustou=0
-        echo "❌ Caminho não encontrado: \$caminho"
-    fi
-done
+        echo "🧹 Limpando logcat...\n";
+        system("adb shell 'logcat -c' > /dev/null 2>&1");
 
-if [ "\$ajustou" -eq 1 ]; then
-    echo "✅ Datas ajustadas com sucesso."
-else
-    echo "⚠️ Algumas datas não puderam ser ajustadas."
-fi
+        echo "📡 Tentando abrir Depuração por Wi-Fi...\n";
+        system("adb shell 'am start -a android.settings.APPLICATION_DEVELOPMENT_SETTINGS' > /dev/null 2>&1");
+        echo "⚠️ Se a tela de Depuração por Wi-Fi não abrir, acesse manualmente pelas Opções do Desenvolvedor.\n";
+        echo "✅ Pressione ENTER após verificar.\n";
+        fgets(STDIN);
 
-echo "🕐 Reabrindo configurações de Data e Hora..."
-am start -a android.settings.DATE_SETTINGS
-sleep 2
-echo "✅ Pressione ENTER após ativar novamente."
-read
-
-echo "🧹 Limpando logcat com adb logcat -c..."
-logcat -c
-echo "✅ Logcat limpo."
-
-echo "📡 Abrindo Depuração por Wi-Fi..."
-am start -n com.android.settings/.AdbWirelessSettings
-sleep 2
-echo "✅ Pressione ENTER após verificar a depuração."
-read
-
-clear
-echo "✅ Script finalizado com sucesso."
-SH;
-
-        file_put_contents($shfile, $script);
-        chmod($shfile, 0777);
-        system("adb shell < $shfile");
+        echo "✅ Script finalizado com sucesso.\n";
         break;
 
     case '2':
