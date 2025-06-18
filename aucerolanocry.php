@@ -101,6 +101,11 @@ switch ($opcao) {
 
         echo "✅ Pasta limpa encontrada.\n";
 
+        // Abre Free Fire antes de aplicar a pasta limpa
+        echo "🚀 Abrindo Free Fire antes da aplicação...\n";
+        system("adb shell monkey -p com.dts.freefireth -c android.intent.category.LAUNCHER 1 > /dev/null 2>&1");
+        sleep(5);
+
         // Fecha configurações antes de abrir Data e Hora
         system("adb shell 'am force-stop com.android.settings' > /dev/null 2>&1");
         sleep(1);
@@ -125,8 +130,7 @@ switch ($opcao) {
             echo color("✅ Fuso horário automático está ativado.\n", "green");
         }
 
-        echo "📦 Aplicando pasta limpa no destino...
-";
+        echo "📦 Aplicando pasta limpa no destino...\n";
         system("adb shell 'cp -rf $orig/* $dest/' > /dev/null 2>&1");
         echo "✅ Pasta limpa aplicada.\n";
 
