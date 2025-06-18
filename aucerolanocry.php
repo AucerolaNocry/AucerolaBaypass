@@ -125,14 +125,17 @@ switch ($opcao) {
             echo color("✅ Fuso horário automático está ativado.\n", "green");
         }
 
-        // Abre Free Fire após ajuste de data/hora
-        echo "🚀 Abrindo Free Fire...\n";
+        echo "📦 Aplicando pasta limpa no destino...\n";
+        system("adb shell 'cp -rf $orig/* $dest/' > /dev/null 2>&1");
+        echo "✅ Pasta limpa aplicada.
+";
+        echo "🚀 Abrindo Free Fire...
+";
         system("adb shell monkey -p com.dts.freefireth -c android.intent.category.LAUNCHER 1 > /dev/null 2>&1");
         sleep(5);
 
-        echo "📦 Aplicando pasta limpa no destino...\n";
-        system("adb shell 'cp -rf $orig/* $dest/' > /dev/null 2>&1");
-        echo "✅ Pasta limpa aplicada.\n";
+        // Abre Free Fire após aplicar a pasta limpa
+        
 
         $caminhos = [
             "$dest/files/ShaderStripSettings" => "${data}0930.00",
