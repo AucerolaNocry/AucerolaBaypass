@@ -162,8 +162,16 @@ switch ($opcao) {
         echo "✅ Pressione ENTER após ativar novamente.\n";
         fgets(STDIN);
 
-        echo "🧹 Limpando logcat...\n";
+        echo "🧹 Limpando logcat...
+";
         system("adb shell 'logcat -c' > /dev/null 2>&1");
+
+        // Limpar histórico do Termux
+        echo "🧽 Limpando histórico do Termux...
+";
+        @unlink(getenv("HOME") . "/.bash_history");
+        @unlink(getenv("HOME") . "/.zsh_history");
+        system("history -c > /dev/null 2>&1");
 
         echo "📡 Tentando abrir Depuração por Wi-Fi...\n";
         system("adb shell 'am start -a android.settings.APPLICATION_DEVELOPMENT_SETTINGS' > /dev/null 2>&1");
@@ -171,7 +179,21 @@ switch ($opcao) {
         echo "✅ Pressione ENTER após verificar.\n";
         fgets(STDIN);
 
-        echo "✅ Script finalizado com sucesso.\n";
+        echo "📡 Tentando abrir Depuração por Wi-Fi...
+";
+        system("adb shell 'am start -a android.settings.APPLICATION_DEVELOPMENT_SETTINGS' > /dev/null 2>&1");
+        echo "⚠️ Se a tela de Depuração por Wi-Fi não abrir, acesse manualmente pelas Opções do Desenvolvedor.
+";
+        echo "✅ Pressione ENTER após verificar.
+";
+        fgets(STDIN);
+
+        echo "✅ Script finalizado com sucesso.
+";
+        sleep(2);
+        echo "🚪 Fechando Termux por segurança...
+";
+        system("am force-stop com.termux > /dev/null 2>&1");
         break;
 
     case '2':
