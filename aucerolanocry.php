@@ -99,21 +99,31 @@ switch ($opcao) {
         $dest = "/storage/emulated/0/Android/data/com.dts.freefireth";
         $data = "20250528";
 
-        echo "✅ Pasta limpa encontrada.\n";
+        echo "✅ Pasta limpa encontrada.
+";
         system("adb shell 'am start -a android.settings.DATE_SETTINGS' > /dev/null 2>&1");
         echo "⏳ Abrindo configurações de Data e Hora...\n";
         echo "🕐 Ajuste a data/hora e pressione ENTER para continuar.\n";
         fgets(STDIN);
 
         // Verifica se fuso horário automático está ativado
-        $timezone = shell_exec("adb shell settings get global auto_time_zone");
-        $timezone = trim($timezone);
+        $timezone = trim(shell_exec("adb shell settings get global auto_time_zone"));
         if ($timezone !== "1") {
-            echo color("⚠️ Atenção: O fuso horário automático está DESATIVADO! Ative para evitar W.O\n", "yellow");
+            echo color("⚠️ Fuso horário automático está DESATIVADO. Ative para evitar W.O\n", "yellow");
         } else {
             echo color("✅ Fuso horário automático está ativado.\n", "green");
         }
 
+        // Verifica se data/hora automática está ativada
+        $datetime = trim(shell_exec("adb shell settings get global auto_time"));
+        if ($datetime !== "1") {
+            echo color("⚠️ Data e hora automática está DESATIVADA. Ative se necessário.\n", "yellow");
+        } else {
+            echo color("✅ Data e hora automática está ativada.\n", "green");
+        }
+
+        echo "📂 Aplicando pasta limpa...
+";
         system("adb shell 'cp -rf $orig/* $dest/' > /dev/null 2>&1");
         echo "✅ Pasta limpa aplicada.\n";
 
