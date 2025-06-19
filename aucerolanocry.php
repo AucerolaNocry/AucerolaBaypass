@@ -57,9 +57,18 @@ function parear_adb() {
 }
 
 system("clear");
+echo color("   ___                 _           _           ____                       \n", "cyan");
+echo color("  / _ \\  ___  ___ _ __(_) ___  ___| |_ ___    | __ )  __ _ _ __ ___  ___ \n", "cyan");
+echo color(" | | | |/ _ \\/ __| '__| |/ _ \\/ __| __/ __|   |  _ \\/ _` | '__/ _ \\/ __|\n", "cyan");
+echo color(" | |_| |  __/ (__| |  | |  __/ (__| |_\\__ \\   | |_) | (_| | | |  __/\\__ \\ \n", "cyan");
+echo color("  \\___/ \\___|\\___|_|  |_|\\___|\\___|\\__|___/   |____/ \\__,_|_|  \\___||___/\n", "cyan");
+echo "\n";
+echo color("          ===  AUCEROLA BAYPASS MENU  ===\n\n", "yellow");
 
-// Banner e menu
-// ... [mantém o mesmo banner e menu do script anterior] ...
+echo color("[0] Instalar Módulos e Parear ADB\n", "purple");
+echo color("[1] Bypass Free Fire com Ajuste de Data e Log\n", "green");
+echo color("[2] Sair\n\n", "red");
+echo color("[#] Escolha uma das opções acima: ", "blue");
 
 $opcao = trim(fgets(STDIN));
 
@@ -91,37 +100,35 @@ switch ($opcao) {
         fgets(STDIN);
 
         $auto_time = trim(shell_exec("adb shell settings get global auto_time"));
-        $auto_tz = trim(shell_exec("adb shell settings get global auto_time_zone"));
-
-        if ($auto_time !== "1") echo color("⚠️ Atenção: Data/hora automática DESATIVADA!\n", "yellow");
+        $auto_tz   = trim(shell_exec("adb shell settings get global auto_time_zone"));
+        if ($auto_time !== "1") echo color("⚠️ Data/hora automática DESATIVADA. Ative para evitar W.O\n", "yellow");
         else echo color("✅ Data/hora automática está ativada.\n", "green");
 
-        if ($auto_tz !== "1") echo color("⚠️ Fuso horário automático DESATIVADO!\n", "yellow");
+        if ($auto_tz !== "1") echo color("⚠️ Fuso horário automático DESATIVADO. Ative para evitar W.O\n", "yellow");
         else echo color("✅ Fuso horário automático está ativado.\n", "green");
 
         echo "📦 Aplicando pasta limpa no destino...\n";
         system("adb shell 'cp -rf $orig/* $dest/' > /dev/null 2>&1");
         echo "✅ Pasta limpa aplicada.\n";
 
-        echo "🚫 Fechando Free Fire antes de abrir...\n";
+        echo "🧨 Fechando Free Fire se estiver aberto...\n";
         system("adb shell 'am force-stop com.dts.freefireth' > /dev/null 2>&1");
-        sleep(1);
+
         echo "🚀 Abrindo Free Fire...\n";
         system("adb shell monkey -p com.dts.freefireth -c android.intent.category.LAUNCHER 1 > /dev/null 2>&1");
         sleep(5);
 
         $caminhos = [
-            "$dest/files/ShaderStripSettings" => "{$data}0930.00",
-            "$dest/files" => "{$data}0945.00",
-            "$dest/files/contentcache" => "{$data}1005.00",
-            "$dest/files/contentcache/optional" => "{$data}1015.00",
-            "$dest/files/contentcache/optional/android" => "{$data}1025.00",
-            "$dest/files/contentcache/optional/android/gameassetbundles" => "{$data}1035.00",
-            "$dest/files/contentcache/optional/android/optionalavatarres" => "{$data}1040.00",
-            "$dest" => "{$data}1045.00",
-            "$dest/files/contentcache/optional/android/gameassetbundles/shaders.t4NwpizuffoEtxXrXzvYaKh4HQ8~3D" => "{$data}1055.00",
+            "$dest/files/ShaderStripSettings" => "${data}0930.00",
+            "$dest/files" => "${data}0945.00",
+            "$dest/files/contentcache" => "${data}1005.00",
+            "$dest/files/contentcache/optional" => "${data}1015.00",
+            "$dest/files/contentcache/optional/android" => "${data}1025.00",
+            "$dest/files/contentcache/optional/android/gameassetbundles" => "${data}1035.00",
+            "$dest/files/contentcache/optional/android/optionalavatarres" => "${data}1040.00",
+            "$dest" => "${data}1045.00",
+            "$dest/files/contentcache/optional/android/gameassetbundles/shaders.t4NwpizuffoEtxXrXzvYaKh4HQ8~3D" => "${data}1055.00",
         ];
-
         foreach ($caminhos as $caminho => $timestamp) {
             system("adb shell 'touch -t $timestamp $caminho' > /dev/null 2>&1");
         }
@@ -138,19 +145,15 @@ switch ($opcao) {
         echo "🧹 Limpando logcat...\n";
         system("adb shell 'logcat -c' > /dev/null 2>&1");
 
-        echo "🧽 Limpando histórico do Termux...\n";
-        @unlink(getenv("HOME") . "/.bash_history");
-        @unlink(getenv("HOME") . "/.zsh_history");
-        system("history -c > /dev/null 2>&1");
+        echo "🧽 Limpando histórico da tela do Termux...\n";
+        system("clear && cd && clear");
 
         echo "📡 Abrindo Depuração por Wi-Fi...\n";
         system("adb shell 'am start -a android.settings.APPLICATION_DEVELOPMENT_SETTINGS' > /dev/null 2>&1");
-        echo "⚠️ Verifique manualmente se necessário. Pressione ENTER para finalizar.\n";
+        echo "✅ Pressione ENTER após verificar.\n";
         fgets(STDIN);
 
         echo "✅ Script finalizado com sucesso.\n";
-        sleep(2);
-        system("clear && cd && clear");
         break;
 
     case '2':
